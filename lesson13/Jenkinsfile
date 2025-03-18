@@ -31,16 +31,16 @@ pipeline {
             }
         }
 
-        stage('Upload') {
-            when {
-                expression { BRANCH_NAME == "main" }
-            }
-            steps {
-                dir('apps/hello-world') {
-                    sh "mvn -DskipTests -s settings.xml -Dmaven.repo.local=${MAVEN_REPO_PATH} -Dversion.application=${env.VERSION} deploy"
-                }
-            }
-        }
+        // stage('Upload') {
+        //     when {
+        //         expression { BRANCH_NAME == "main" }
+        //     }
+        //     steps {
+        //         dir('apps/hello-world') {
+        //             sh "mvn -DskipTests -s settings.xml -Dmaven.repo.local=${MAVEN_REPO_PATH} -Dversion.application=${env.VERSION} deploy"
+        //         }
+        //     }
+        // }
     }
 
     post {
