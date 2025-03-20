@@ -1,0 +1,29 @@
+#cloud-config
+version: v1
+package_update: true
+#   package_upgrade: true
+packages:
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+users:
+  - default
+  - name: levelup
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    lock_passwd: false
+    ssh_authorized_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCYg0UqCL+TmzlWILS1j0E46ZTEsrQ1xtUR7bxex5BJWXMU8/CVqZHkPbcpkB+SoFpt1uaN+F1xaJkzRoHqcVmGr0OSTTINEibqJRny42khx73cnNf0+T7fvq6DPcc3BkaPCOn7EptkfIE+9mzyDkBrWacS6NerdxwcRLZ9bje2cpdHFSCz76N7xkug8PZN3IuwgXtnWAHTUqjjciRmBKwZL8IamkVz/1HfCVFfQUEVovVIfhLWxP36Z6rHaMSNTz1pPzmltRw06qgc4yle3geFph03W7wZcv7DNlm7uGWwH56MGjX9o7nZDIX0Zg76fuCGG8FZHUNgwYf55KneyTshTs7wexYgyAxkw42QzLr0UIzuiNQwW2Y4/k8iJJdhdX+d8orV77h4qXH5mEryY/8hlAao4pItH8/XBHVOF+ZTcSAChES22gYy8i7NX9+i2QYmVpAQLg4XKtxxbG3ZB/kQqykrsrknPU0bBJ4GEIX/S13SNT/Zg+vghpBZIzedskU= vagrant@lu-ubuntu"
+runcmd:
+  - mkdir -p /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  # - IP=$(ip -f inet addr show eth0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p') && sed -i 's/HOST_IP/$IP/g' /lib/systemd/system/docker.service
+  # - sed -i 's/ -H fd:\/\///g' /lib/systemd/system/docker.service
+  # - systemctl daemon-reload
+  # - systemctl restart docker
+  - usermod -aG docker levelup
